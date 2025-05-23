@@ -2,15 +2,10 @@ package com.intern.carRental.primary;
 
 import java.util.*;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -28,75 +23,110 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Table("vehicle_reservation")
 @JsonIdentityInfo(
 		  generator = ObjectIdGenerators.PropertyGenerator.class, 
 		  property = "id")
-public class VehicleReservation{
+public class VehicleReservation {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-
-	private int id;
+	private Long id;
 	private String reservationNumber;
-	private Date creationDate;
-	//reservationNumber
-	@Enumerated(EnumType.STRING)
-	private ReservationStatus RSstatus;
 	
-	private Date dueDate;
-	private Date returnDate;
+	@Column("creation_date")
+	private Long creationDate;
+	
+	@Column("status")
+	private String status;
+	
+	@Column("due_date")
+	private Long dueDate;
+	
+	@Column("return_date")
+	private Long returnDate;
+	
+	@Column("pickup_location_name")
 	private String pickupLocationName;
+	
+	@Column("return_location_name")
 	private String returnLocationName;
 	
+	@Column("account_id")
+	private Long accountId;
+	
+	@Column("vehicle_id")
+	private Long vehicleId;
+	
+	@Column("pickup_location_id")
+	private Long pickupLocationId;
+	
+	@Column("return_location_id")
+	private Long returnLocationId;
+	
+	@Transient
 	@JsonBackReference(value = "accVehicle")
-	@ManyToOne
 	private Account account;
 	
+	@Transient
 	@JsonManagedReference(value = "addDriver")
-	@OneToMany(mappedBy = "vehicleReservation")
 	private List<AdditionalDriver> additionaldriver;
 	
+	@Transient
 	@JsonBackReference(value = "Vehicle")
-	@ManyToOne
 	private Vehicle vehicle;
 	
-	@OneToOne
+	@Transient
 	private Bill bill;
 	
+	@Transient
 	@JsonBackReference(value = "Notif")
-	@OneToMany(mappedBy = "vehiclereservation") 
 	private List<Notification> notification;
 	
-	@OneToMany(mappedBy = "vehiclereservation")
+	@Transient
 	private List<Service> service;
 	
-	@OneToMany(mappedBy = "vehiclereservation") 
+	@Transient
 	private List<RentalInsurance> rentalinsurance;
 	
-	@OneToMany(mappedBy= "vehiclereservation")
+	@Transient
 	private List<Equipment> equipment;
+	
+	// Helper methods for enum conversion
+	public ReservationStatus getRSstatus() {
+		return status != null ? ReservationStatus.valueOf(status) : null;
+	}
+	
+	public void setRSstatus(ReservationStatus status) {
+		this.status = status != null ? status.toString() : null;
+	}
+	
+	// Helper methods for Date conversion
+	public Date getCreationDateAsDate() {
+		return creationDate != null ? new Date(creationDate) : null;
+	}
+	
+	public void setCreationDateFromDate(Date date) {
+		this.creationDate = date != null ? date.getTime() : null;
+	}
+	
+	public Date getDueDateAsDate() {
+		return dueDate != null ? new Date(dueDate) : null;
+	}
+	
+	public void setDueDateFromDate(Date date) {
+		this.dueDate = date != null ? date.getTime() : null;
+	}
+	
+	public Date getReturnDateAsDate() {
+		return returnDate != null ? new Date(returnDate) : null;
+	}
+	
+	public void setReturnDateFromDate(Date date) {
+		this.returnDate = date != null ? date.getTime() : null;
+	}
 	
 	public VehicleReservation fetchDetails() {
 		// TODO fetchDetails
 		return null;
 	}
-
-	/*
-	@Override
-	public String toString() {
-		return "VehicleReservation [id=" + id + ", reservationNumber=" + reservationNumber + ", creationDate="
-				+ creationDate + ", RSstatus=" + RSstatus + ", dueDate=" + dueDate + ", returnDate=" + returnDate
-				+ ", pickupLocationName=" + pickupLocationName + ", returnLocationName=" + returnLocationName
-				+ ", account=" + account + ", additionaldriver=" + additionaldriver + ", vehicle=" + vehicle + ", bill="
-				+ bill + ", notification=" + notification + ", service=" + service + ", rentalinsurance="
-				+ rentalinsurance + ", equipment=" + equipment + "]";
-	}
-	*/
-	
-	//Rates
-		
-	
-	
-	
 }

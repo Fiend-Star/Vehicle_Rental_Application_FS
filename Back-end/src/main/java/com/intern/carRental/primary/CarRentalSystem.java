@@ -1,37 +1,30 @@
 package com.intern.carRental.primary;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import lombok.*;
 
 @Getter
 @Setter
-@Entity
+@Table("car_rental_system")
 public class CarRentalSystem {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY) 
-	private int id;
+	private Long id;
+	
 	private String name;
 	
+	// This field is not stored directly in the database but loaded by service layer
+	@Transient
 	@JsonManagedReference(value="CRSystem")
-	@OneToMany(mappedBy="carRentalSystem")
-	private List<CarRentalLocation> carRentalLocation ;
+	private List<CarRentalLocation> carRentalLocation;
 
 	public boolean addNewLocation() {
 		//TODO addNewLocation
 		return false;
-
-	}
-
-	@Override
-	public String toString() {
-		return "CarRentalSystem [id=" + id + ", name=" + name+ "]";
 	}
 }
