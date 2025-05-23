@@ -1,21 +1,16 @@
 package com.intern.primary.addonServices;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.intern.carRental.primary.abstrct.Payment;
+import com.intern.primary.enums.PaymentStatus;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-//@PrimaryKeyJoinColumn(name="id")
+@Table("check_transaction")
 public class CheckTransaction extends Payment{
 	
 
@@ -25,7 +20,17 @@ public class CheckTransaction extends Payment{
 	
 	@Override
 	public boolean initiateTransaction() {
-		// TODO Auto-generated method stub
+		// Check if bank name and check number are valid
+		if (this.getBankName() != null && !this.getBankName().isEmpty() && 
+			this.getCheckNumber() != null && !this.getCheckNumber().isEmpty()) {
+			
+			// Update status to COMPLETED
+			this.setStatus(PaymentStatus.COMPLETED.name());
+			return true;
+		}
+		
+		// If information is incomplete, payment fails
+		this.setStatus(PaymentStatus.FAILED.name());
 		return false;
 	}
 

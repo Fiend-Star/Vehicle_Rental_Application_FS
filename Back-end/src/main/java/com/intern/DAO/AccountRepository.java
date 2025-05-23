@@ -1,9 +1,13 @@
 package com.intern.DAO;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
 import com.intern.carRental.primary.abstrct.Account;
+import reactor.core.publisher.Mono;
 
-public interface AccountRepository extends JpaRepository<Account, Integer>{
+@Repository
+@Deprecated // Use ReactiveAccountRepository from com.intern.repository package instead
+public interface AccountRepository extends ReactiveCrudRepository<Account, Long> {
 	
-	Account findByPersonEmail(String Email);
+	Mono<Account> findByPersonEmail(String Email);
 	
 }

@@ -190,24 +190,7 @@
             <scope>test</scope>
         </dependency>
         
-        <!-- Added for JPA compatibility during migration -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>jakarta.transaction</groupId>
-            <artifactId>jakarta.transaction-api</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+        <!-- JPA dependencies removed as they are no longer needed after R2DBC migration -->
     </dependencies>
 
     <build>

@@ -27,14 +27,25 @@ public class Car extends Vehicle {
 	
 	@Override
 	public Boolean reserveVehicle() {
-		// TODO Auto-generated method stub
-		return null;
+		// Check if the vehicle is available for reservation
+		if (this.getStatusEnum() == com.intern.primary.enums.VehicleStatus.AVAILABLE) {
+			// Set status to Reserved
+			this.setStatusEnum(com.intern.primary.enums.VehicleStatus.RESERVED);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public Boolean returnVehicle() {
-		// TODO Auto-generated method stub
-		return null;
+		// Check if the vehicle is currently loaned/reserved
+		if (this.getStatusEnum() == com.intern.primary.enums.VehicleStatus.LOANED || 
+			this.getStatusEnum() == com.intern.primary.enums.VehicleStatus.RESERVED) {
+			// Set status back to available
+			this.setStatusEnum(com.intern.primary.enums.VehicleStatus.AVAILABLE);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
