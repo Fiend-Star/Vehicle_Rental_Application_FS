@@ -1,11 +1,9 @@
 package com.intern.carRental.primary;
 
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -13,19 +11,22 @@ import lombok.*;
 
 @Getter
 @Setter
-@Entity
+@Table("bill_item")
 public class BillItem {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	
-	private int amount;
+	@Column("amount")
+	private double amount;
 	
+	@Column("type")
 	private String service;
 	
+	@Column("bill_id")
+	private Long billId;
 	
+	@Transient
 	@JsonBackReference(value = "billItem")
-	@ManyToOne(optional = false)
 	private Bill bill;
 }

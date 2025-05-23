@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+    <!-- Generated code -->
+    <suppress files="[\\/]generated[\\/]" checks="[a-zA-Z0-9]*"/>
+    <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
+
+    <!-- Configuration files -->
+    <suppress files="[\\/]config[\\/]" checks="[a-zA-Z0-9]*"/>
+    
+    <!-- Model and DTO classes -->
+    <suppress files=".*dto.*\.java" checks="[a-zA-Z0-9]*"/>
+    
+    <!-- Main application class -->
+    <suppress files="CarRentalApplication\.java" checks="[a-zA-Z0-9]*"/>
+</suppressions>

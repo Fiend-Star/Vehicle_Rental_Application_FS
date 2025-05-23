@@ -72,13 +72,43 @@ public class DataMigrationUtility {
         
         // Migrate bills
         Mono<Void> billMigration = Flux.fromIterable(billRepository.findAll())
-                .flatMap(reactiveBillRepository::save)
+                .flatMap(bill -> {
+                    // Convert ID type
+                    bill.setId(Long.valueOf(bill.getId()));
+                    
+                    // Set foreign keys based on relations
+                    if (bill.getVehicleReservation() != null) {
+                        bill.setReservationId(Long.valueOf(bill.getVehicleReservation().getId()));
+                    }
+                    
+                    // Convert Date to Long
+                    if (bill.getCreationDate() != null) {
+                        bill.setCreationDate(bill.getCreationDate().getTime());
+                    }
+                    
+                    // Set payment status
+                    if (bill.getPaymentStatus() != null) {
+                        bill.setStatus(bill.getPaymentStatus().toString());
+                    }
+                    
+                    return reactiveBillRepository.save(bill);
+                })
                 .then()
                 .doOnSuccess(v -> log.info("Bill migration completed"));
         
         // Migrate bill items
         Mono<Void> billItemMigration = Flux.fromIterable(billItemRepository.findAll())
-                .flatMap(reactiveBillItemRepository::save)
+                .flatMap(billItem -> {
+                    // Convert ID type
+                    billItem.setId(Long.valueOf(billItem.getId()));
+                    
+                    // Set foreign keys based on relations
+                    if (billItem.getBill() != null) {
+                        billItem.setBillId(Long.valueOf(billItem.getBill().getId()));
+                    }
+                    
+                    return reactiveBillItemRepository.save(billItem);
+                })
                 .then()
                 .doOnSuccess(v -> log.info("Bill item migration completed"));
         
