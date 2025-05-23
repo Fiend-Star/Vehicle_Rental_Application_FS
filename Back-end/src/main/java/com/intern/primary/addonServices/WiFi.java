@@ -1,17 +1,20 @@
 package com.intern.primary.addonServices;
 
 import com.intern.carRental.primary.abstrct.Service;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Entity;
-
-@Entity
+@Table("wifi")
 public class WiFi extends Service {
 
 
     @Override
     public Boolean addService() {
-        // TODO Auto-generated method stub
-        return null;
+        // Check that service is not already added to a reservation
+        if (this.getVehicleReservationId() != null) {
+            // Service is already associated with a reservation
+            return true;
+        }
+        return false;
     }
 
 }

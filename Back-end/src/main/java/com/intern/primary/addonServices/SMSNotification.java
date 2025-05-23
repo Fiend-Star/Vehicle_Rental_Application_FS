@@ -5,15 +5,11 @@ import com.intern.primary.simplePOJO.Location;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
-//@PrimaryKeyJoinColumn(name="id")
-@Entity
+@Table("sms_notification")
 public class SMSNotification extends Notification {
 
 
@@ -23,7 +19,12 @@ public class SMSNotification extends Notification {
 
     @Override
     public Boolean sendNotification(String Subject, String Body) {
-        // TODO Auto-generated method stub
-        return null;
+        // In a real implementation, this would use a SMS service provider
+        // Here we just simulate successful sending
+        if (this.getPhonenum() != null && !this.getPhonenum().isEmpty()) {
+            this.setContent(Body);
+            return true;
+        }
+        return false;
     }
 }

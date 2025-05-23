@@ -1,23 +1,21 @@
 package com.intern.primary.addonServices;
 
 import com.intern.carRental.primary.abstrct.Service;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-
-//@PrimaryKeyJoinColumn(name="id")
-@Entity
+@Table("roadside_assistance")
 public class RoadsideAssistance extends Service {
 
 
 
     @Override
     public Boolean addService() {
-        // TODO Auto-generated method stub
-        return null;
+        // Check that service is not already added to a reservation
+        if (this.getVehicleReservationId() != null) {
+            // Service is already associated with a reservation
+            return true;
+        }
+        return false;
     }
 
 }

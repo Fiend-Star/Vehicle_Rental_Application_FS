@@ -4,29 +4,36 @@ import com.intern.carRental.primary.abstrct.Account;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
-@Entity
-//@PrimaryKeyJoinColumn(name="id")
+@Table("account")
 public class Member extends Account {
-    // a primary key is not needed in a table where a table inherits via primary key join column
 
-
+    @Column("driver_license_number")
     private String driverLicenseNumber;
-    private Date driverLicenseExpiry;
-
+    
+    @Column("driver_license_expiry")
+    private Long driverLicenseExpiry;
 
     public List<VehicleReservation> getReservations() {
         //TODO getreservation
         return null;
+    }
+    
+    // Helper method for Date conversion
+    public Date getDriverLicenseExpiryAsDate() {
+        return driverLicenseExpiry != null ? new Date(driverLicenseExpiry) : null;
+    }
+    
+    public void setDriverLicenseExpiryFromDate(Date date) {
+        this.driverLicenseExpiry = date != null ? date.getTime() : null;
     }
 
     @Override
@@ -49,7 +56,7 @@ public class Member extends Account {
 
     @Override
     public Boolean isAccActive() {
-        return true;
+        // TODO Auto-generated method stub
+        return this.getAccActive();
     }
-
 }

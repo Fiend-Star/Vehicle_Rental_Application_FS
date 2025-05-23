@@ -1,23 +1,28 @@
 package com.intern.carRental.primary.abstrct;
 
-import javax.persistence.*;
-
 import com.intern.carRental.primary.VehicleReservation;
-
 import lombok.*;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
 @Getter
 @Setter
-@Entity
-@Inheritance(strategy =InheritanceType.TABLE_PER_CLASS)
+@Table("rental_insurance")
 public abstract class RentalInsurance {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)
-	private int id;
+	private Long id;
 	
+	@Column("insurance_id")
 	private String insuranceId;
 	
-	@ManyToOne(optional = false)
+	@Column("vehicle_reservation_id")
+	private Long vehicleReservationId;
+	
+	@Transient
 	private VehicleReservation vehiclereservation;
 	
 	public abstract Boolean addInsurance();

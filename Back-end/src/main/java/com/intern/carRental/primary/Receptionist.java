@@ -1,27 +1,34 @@
 package com.intern.carRental.primary;
 import java.util.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.intern.carRental.primary.abstrct.Account;
 
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 @Setter
-@Entity
-//@PrimaryKeyJoinColumn(name="id")  
-public class Receptionist extends Account{
+@Table("receptionist")
+public class Receptionist extends Account {
 	
-
-	private Date dateJoined;
+	@Column("date_joined")
+	private Long dateJoined; // Store as milliseconds since epoch
 	
     private boolean active;	//security
+    
+    // Helper methods for Date conversion
+    @Transient
+    public Date getDateJoinedAsDate() {
+        return dateJoined != null ? new Date(dateJoined) : null;
+    }
+    
+    public void setDateJoinedFromDate(Date date) {
+        this.dateJoined = date != null ? date.getTime() : null;
+    }
 
 	
 	public void searchMember(String Member) {

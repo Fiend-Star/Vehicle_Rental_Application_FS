@@ -1,21 +1,16 @@
 package com.intern.primary.addonServices;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.intern.carRental.primary.abstrct.Payment;
+import com.intern.primary.enums.PaymentStatus;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-//@PrimaryKeyJoinColumn(name="id")
-@Entity
+@Table("cash_transaction")
 public class CashTransaction extends Payment{
 	
 
@@ -24,7 +19,15 @@ public class CashTransaction extends Payment{
 
 	@Override
 	public boolean initiateTransaction() {
-		// TODO Auto-generated method stub
+		// Check if cash tendered is sufficient
+		if (this.getCashTendered() >= this.getAmount()) {
+			// Update status to COMPLETED
+			this.setStatus(PaymentStatus.COMPLETED.name());
+			return true;
+		}
+		
+		// If insufficient cash, payment fails
+		this.setStatus(PaymentStatus.FAILED.name());
 		return false;
 	}
 

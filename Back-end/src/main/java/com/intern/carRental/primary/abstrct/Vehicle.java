@@ -1,7 +1,11 @@
 package com.intern.carRental.primary.abstrct;
 
 import java.util.List;
-import javax.persistence.*;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -17,54 +21,71 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Table("vehicle")
 @JsonIdentityInfo(
 		  generator = ObjectIdGenerators.PropertyGenerator.class, 
 		  property = "id")
-@Inheritance(strategy =InheritanceType.TABLE_PER_CLASS)
 public abstract class Vehicle {
 
 	public Vehicle() {
 		super();
 	}
 
-	@Id	
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)
-	public int id;
+	@Id
+	private Long id;
 	
+	@Column("number_plate")
 	private String numberPlate;
+	
+	@Column("stock_number")
 	private String stockNumber;
+	
+	@Column("passenger_capacity")
 	private int passengerCapacity;
 
+	@Column("has_sunroof")
 	private Boolean hasSunroof;
 
 	private String model;	
 	
 	private String make;
+	
+	@Column("manufacturing_year")
 	private int manufacturingYear;
+	
 	private int mileage;
 	
-	@Column(unique = true)
 	private String barcode;
 	
-	@Enumerated(EnumType.STRING)
-	private VehicleStatus status;
+	private String status; // Stored as string representation of VehicleStatus enum
 	
-	@JsonBackReference(value="CRLocation") 
-	@ManyToOne(optional = true)//,fetch = FetchType.LAZY)
+	@Column("car_rental_location_id")
+	private Long carRentalLocationId;
+	
+	@Column("parking_stall_id")
+	private Long parkingStallId;
+	
+	// These fields are not stored directly in the database but loaded by service layer
+	@Transient
 	private CarRentalLocation carRentalLocation;
 	
-	@JsonManagedReference(value = "log")
-	@OneToMany(mappedBy = "vehicle")
+	@Transient
 	private List<VehicleLog> vehicle_log;
 	
-	
-	@JsonManagedReference(value = "Vehicle")
-	@OneToMany(mappedBy="vehicle")//,fetch = FetchType.LAZY)
+	@Transient
 	private List<VehicleReservation> vehiclereservation;
 	
-	@OneToOne(targetEntity = ParkingStall.class)
+	@Transient
 	private ParkingStall parkingstall;
+	
+	// Helper methods to get/set enum status
+	public VehicleStatus getStatusEnum() {
+	    return status != null ? VehicleStatus.valueOf(status) : null;
+	}
+	
+	public void setStatusEnum(VehicleStatus statusEnum) {
+	    this.status = statusEnum != null ? statusEnum.toString() : null;
+	}
 	
 	public abstract Boolean reserveVehicle();
 	

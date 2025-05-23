@@ -1,11 +1,6 @@
 package com.intern.carRental.primary.vehicletypes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.intern.carRental.primary.abstrct.Vehicle;
 
@@ -14,24 +9,32 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//@PrimaryKeyJoinColumn(name="id")  
-@Entity
+@Table("suv")
 public class SUV extends Vehicle {
-	
-
 	
 	private String type;
 	
 	@Override
 	public Boolean reserveVehicle() {
-		// TODO Auto-generated method stub
-		return null;
+		// Check if the SUV is available for reservation
+		if (this.getStatusEnum() == com.intern.primary.enums.VehicleStatus.AVAILABLE) {
+			// Set status to Reserved
+			this.setStatusEnum(com.intern.primary.enums.VehicleStatus.RESERVED);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public Boolean returnVehicle() {
-		// TODO Auto-generated method stub
-		return null;
+		// Check if the SUV is currently loaned/reserved
+		if (this.getStatusEnum() == com.intern.primary.enums.VehicleStatus.LOANED || 
+			this.getStatusEnum() == com.intern.primary.enums.VehicleStatus.RESERVED) {
+			// Set status back to available
+			this.setStatusEnum(com.intern.primary.enums.VehicleStatus.AVAILABLE);
+			return true;
+		}
+		return false;
 	}
 
 }

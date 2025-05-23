@@ -4,21 +4,26 @@ import com.intern.carRental.primary.VehicleReservation;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table("service")
 public abstract class Service {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    private Long id;
 
+    @Column("service_id")
     private String serviceId;
 
-    @ManyToOne(optional = false)
+    @Column("vehicle_reservation_id")
+    private Long vehicleReservationId;
+    
+    @Transient
     private VehicleReservation vehiclereservation;
 
     public abstract Boolean addService();

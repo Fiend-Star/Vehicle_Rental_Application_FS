@@ -3,73 +3,66 @@ package com.intern.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.intern.security.jwt.AuthTokenFilter;
-import com.intern.security.jwt.AuthEntryPointJwt;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.ServerSecurityContextRepository;
+
+import com.intern.security.jwt.ReactiveAuthenticationFilter;
+import com.intern.security.jwt.ReactiveAuthEntryPointJwt;
+import com.intern.security.jwt.ReactiveSecurityContextRepository;
+import com.intern.service.ReactiveUserDetailsService;
 
 @Configuration
-@EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+@EnableWebFluxSecurity
+public class SecurityConfiguration {
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private ReactiveUserDetailsService userDetailsService;
     
-
     @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private ReactiveAuthEntryPointJwt unauthorizedHandler;
+    
+    @Autowired
+    private ReactiveSecurityContextRepository securityContextRepository;
     
     @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter() {
-      return new AuthTokenFilter();
-    }
-    
-    //authentication
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
+    public ReactiveAuthenticationFilter reactiveAuthenticationFilter() {
+      return new ReactiveAuthenticationFilter();
     }
     
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-      return super.authenticationManagerBean();
+    public ReactiveAuthenticationManager reactiveAuthenticationManager() {
+        UserDetailsRepositoryReactiveAuthenticationManager authenticationManager = 
+            new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+        authenticationManager.setPasswordEncoder(encoder());
+        return authenticationManager;
     }
     
-    //First Authentication then Authorization
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        
-        http.cors().and().csrf().disable()
-        .exceptionHandling().authenticationEntryPoint( unauthorizedHandler).and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-        .authorizeRequests().antMatchers("/api/v1/**").permitAll()
-        .antMatchers("/api/v1/test/user").hasAnyRole("USER","ADMIN")
-        .antMatchers("/api/v1/test/admin").hasRole("ADMIN")
-        .anyRequest().authenticated();
-       
-       
-      http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-      
-        
+    @Bean
+    public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
+        return http
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+            .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+            .exceptionHandling(exceptionHandlingSpec -> 
+                exceptionHandlingSpec.authenticationEntryPoint(unauthorizedHandler))
+            .securityContextRepository(securityContextRepository)
+            .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
+                .pathMatchers("/api/v1/**").permitAll()
+                .pathMatchers("/api/v1/test/user").hasAnyRole("USER", "ADMIN")
+                .pathMatchers("/api/v1/test/admin").hasRole("ADMIN")
+                .anyExchange().authenticated())
+            .build();
     }
     
     // Bcrypt
     @Bean
-	public PasswordEncoder encoder() {
-    	return new BCryptPasswordEncoder();
-    	//return NoOpPasswordEncoder.getInstance(); //Simple text password
-        
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
-    
-    
 }

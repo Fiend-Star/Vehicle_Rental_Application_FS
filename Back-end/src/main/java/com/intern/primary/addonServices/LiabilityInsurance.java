@@ -1,24 +1,22 @@
 package com.intern.primary.addonServices;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.intern.carRental.primary.abstrct.RentalInsurance;
 
-//@PrimaryKeyJoinColumn(name="id")
-@Entity
+@Table("liability_insurance")
 public class LiabilityInsurance extends RentalInsurance{
 	
 
 	
 	@Override
 	public Boolean addInsurance() {
-		// TODO Auto-generated method stub
-		return null;
+		// Check that insurance is not already added to a reservation
+		if (this.getVehicleReservationId() != null) {
+			// Insurance is already associated with a reservation
+			return true;
+		}
+		return false;
 	}
 
 }

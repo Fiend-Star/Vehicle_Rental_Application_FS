@@ -1,17 +1,20 @@
 package com.intern.primary.addonServices;
 
 import com.intern.carRental.primary.abstrct.Equipment;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Entity;
-
-@Entity
+@Table("ski_rack")
 public class SkiRack extends Equipment {
 
 
     @Override
     public Boolean addEquipment() {
-        // TODO Auto-generated method stub
-        return null;
+        // Check that equipment is not already added to a reservation
+        if (this.getVehicleReservationId() != null) {
+            // Equipment is already associated with a reservation
+            return true;
+        }
+        return false;
     }
 
 }

@@ -2,13 +2,10 @@ package com.intern.carRental.primary;
 
 import java.util.*;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,28 +17,39 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Table("vehicle_log")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class VehicleLog {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	
-	@Enumerated(EnumType.STRING)
-	private VehicleLogType type;
+	private String type; // Stored as string representation of VehicleLogType enum
 	
 	private String description;
+	
+	@Column("creation_date")
 	private Date creationDate;
 	
+	@Column("vehicle_id")
+	private Long vehicleId;
+	
+	// This field is not stored directly in the database but loaded by service layer
+	@Transient
 	@JsonBackReference(value = "log")
-	@ManyToOne(optional = false)
 	private Vehicle vehicle;
 	
+	// Helper methods to get/set enum type
+	public VehicleLogType getTypeEnum() {
+	    return type != null ? VehicleLogType.valueOf(type) : null;
+	}
+	
+	public void setTypeEnum(VehicleLogType typeEnum) {
+	    this.type = typeEnum != null ? typeEnum.toString() : null;
+	}
 	
 	public ArrayList<VehicleLogType> searchByLogtype(){
 		//TODO searchByLogType
 		return null;
 	}
-
 }
