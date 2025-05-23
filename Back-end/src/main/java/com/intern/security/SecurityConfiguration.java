@@ -45,10 +45,7 @@ public class SecurityConfiguration {
     
     @Bean
     public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
-        
-        http.cors().and().csrf().disable()
-        .exceptionHandling().authenticationEntryPoint( unauthorizedHandler).and()
-                return http
+        return http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
             .formLogin(ServerHttpSecurity.FormLoginSpec::disable)

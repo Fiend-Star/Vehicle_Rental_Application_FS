@@ -77,3 +77,4 @@
 4. Finalize data migration utilities for entity relationships
 5. Convert remaining JPA repositories to R2DBC
 6. Update controllers to use reactive programming model (Mono/Flux)
+7. Address all issues detailed in the R2DBC_MIGRATION_PLAN.md file
