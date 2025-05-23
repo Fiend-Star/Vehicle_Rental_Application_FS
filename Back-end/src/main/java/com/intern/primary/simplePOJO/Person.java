@@ -1,17 +1,5 @@
 package com.intern.primary.simplePOJO;
 
-
-
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import org.hibernate.annotations.ValueGenerationType;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,16 +11,36 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Embeddable
 public class Person {
-
-	
 	private String name;
-	
-	@Embedded
-	private Location Address;
-	
 	private String email;
-	
 	private String phone;
+	
+	// Address fields embedded directly
+	private String streetAddress;
+	private String city;
+	private String state;
+	private String zipcode;
+	private String country;
+	
+	// Helper method to get/set address as an object
+	public Location getAddress() {
+		Location address = new Location();
+		address.setStreetAddress(this.streetAddress);
+		address.setCity(this.city);
+		address.setState(this.state);
+		address.setZipcode(this.zipcode);
+		address.setCountry(this.country);
+		return address;
+	}
+	
+	public void setAddress(Location address) {
+		if (address != null) {
+			this.streetAddress = address.getStreetAddress();
+			this.city = address.getCity();
+			this.state = address.getState();
+			this.zipcode = address.getZipcode();
+			this.country = address.getCountry();
+		}
+	}
 }

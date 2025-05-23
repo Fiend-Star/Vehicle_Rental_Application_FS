@@ -1,6 +1,6 @@
 package com.intern.repository;
 
-import com.intern.carRental.primary.Account;
+import com.intern.carRental.primary.abstrct.Account;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

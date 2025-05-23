@@ -1,6 +1,5 @@
 package com.intern.primary.simplePOJO;
 
-import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Embeddable
 public class Location {	
 	private String streetAddress;
 	private String city;

@@ -6,36 +6,49 @@ import com.intern.carRental.primary.VehicleReservation;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.Date;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table("notification")
 public abstract class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    private Long id;
 
-    //notificationId is replaces by auto generated id
-    //private int notificationId;
-    private Date createdOn;
+    @Column("created_on")
+    private Long createdOn;
+    
     private String content;
 
+    @Column("phone_number")
     private String phoneNumber;
 
+    @Column("bill_id")
+    private Long billId;
+    
+    @Column("vehicle_reservation_id")
+    private Long vehicleReservationId;
 
-    @OneToOne
+    @Transient
     private Bill bill;
 
+    @Transient
     @JsonManagedReference(value = "Notif")
-    @ManyToOne
     private VehicleReservation vehiclereservation;
 
     public abstract Boolean sendNotification(String str1, String str2);
-
-
+    
+    // Helper methods for Date conversion
+    public java.util.Date getCreatedOnAsDate() {
+        return createdOn != null ? new java.util.Date(createdOn) : null;
+    }
+    
+    public void setCreatedOnFromDate(java.util.Date date) {
+        this.createdOn = date != null ? date.getTime() : null;
+    }
 }
     

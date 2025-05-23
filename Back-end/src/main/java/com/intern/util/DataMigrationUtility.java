@@ -32,6 +32,7 @@ public class DataMigrationUtility {
     private final VehicleLogRepository vehicleLogRepository;
     private final CarRentalLocationRepository carRentalLocationRepository;
     private final CarRentalSystemRepository carRentalSystemRepository;
+    private final ReceptionistRepository receptionistRepository;
     
     // Reactive repositories
     private final ReactiveVehicleRepository reactiveVehicleRepository;
@@ -43,6 +44,7 @@ public class DataMigrationUtility {
     private final ReactiveVehicleLogRepository reactiveVehicleLogRepository;
     private final ReactiveCarRentalLocationRepository reactiveCarRentalLocationRepository;
     private final ReactiveCarRentalSystemRepository reactiveCarRentalSystemRepository;
+    private final ReactiveReceptionistRepository reactiveReceptionistRepository;
     
     /**
      * Triggered when the application is ready.
@@ -178,6 +180,23 @@ public class DataMigrationUtility {
                 .then()
                 .doOnSuccess(v -> log.info("Vehicle log migration completed"));
         
+        // Migrate receptionists
+        Mono<Void> receptionistMigration = Flux.fromIterable(receptionistRepository.findAll())
+                .map(receptionist -> {
+                    // Convert to R2DBC entity
+                    receptionist.setId(Long.valueOf(receptionist.getId()));
+                    
+                    // Convert Date to Long for dateJoined
+                    if (receptionist.getDateJoined() != null) {
+                        receptionist.setDateJoinedFromDate(receptionist.getDateJoined());
+                    }
+                    
+                    return receptionist;
+                })
+                .flatMap(reactiveReceptionistRepository::save)
+                .then()
+                .doOnSuccess(v -> log.info("Receptionist migration completed"));
+        
         // Execute all migrations sequentially
         carRentalSystemMigration
                 .then(carRentalLocationMigration)
@@ -188,6 +207,7 @@ public class DataMigrationUtility {
                 .then(reservationMigration)
                 .then(billMigration)
                 .then(billItemMigration)
+                .then(receptionistMigration)
                 .doOnSuccess(v -> log.info("All data migration completed"))
                 .subscribe();
     }

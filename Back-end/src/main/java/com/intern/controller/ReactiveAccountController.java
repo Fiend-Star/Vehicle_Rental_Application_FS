@@ -1,6 +1,6 @@
 package com.intern.controller;
 
-import com.intern.carRental.primary.Account;
+import com.intern.carRental.primary.abstrct.Account;
 import com.intern.service.ReactiveAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

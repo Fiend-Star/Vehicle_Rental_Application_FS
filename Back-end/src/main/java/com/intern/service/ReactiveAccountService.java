@@ -1,6 +1,6 @@
 package com.intern.service;
 
-import com.intern.carRental.primary.Account;
+import com.intern.carRental.primary.abstrct.Account;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

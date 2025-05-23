@@ -10,6 +10,14 @@ DROP TABLE IF EXISTS parking_stall;
 DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS car_rental_location;
 DROP TABLE IF EXISTS car_rental_system;
+DROP TABLE IF EXISTS car;
+DROP TABLE IF EXISTS truck;
+DROP TABLE IF EXISTS suv;
+DROP TABLE IF EXISTS motorcycle;
+DROP TABLE IF EXISTS van;
+DROP TABLE IF EXISTS receptionist;
+DROP TABLE IF EXISTS driver;
+DROP TABLE IF EXISTS service;
 
 -- Create tables
 CREATE TABLE IF NOT EXISTS car_rental_system (
@@ -116,6 +124,60 @@ CREATE TABLE IF NOT EXISTS bill_item (
     type VARCHAR(50) NOT NULL,
     bill_id BIGINT,
     FOREIGN KEY (bill_id) REFERENCES bill(id)
+);
+
+-- Create tables for vehicle subtypes
+CREATE TABLE IF NOT EXISTS car (
+    id BIGINT PRIMARY KEY,
+    type VARCHAR(50),
+    FOREIGN KEY (id) REFERENCES vehicle(id)
+);
+
+CREATE TABLE IF NOT EXISTS truck (
+    id BIGINT PRIMARY KEY,
+    type VARCHAR(50),
+    FOREIGN KEY (id) REFERENCES vehicle(id)
+);
+
+CREATE TABLE IF NOT EXISTS suv (
+    id BIGINT PRIMARY KEY,
+    type VARCHAR(50),
+    FOREIGN KEY (id) REFERENCES vehicle(id)
+);
+
+CREATE TABLE IF NOT EXISTS motorcycle (
+    id BIGINT PRIMARY KEY,
+    type VARCHAR(50),
+    FOREIGN KEY (id) REFERENCES vehicle(id)
+);
+
+CREATE TABLE IF NOT EXISTS van (
+    id BIGINT PRIMARY KEY,
+    type VARCHAR(50),
+    FOREIGN KEY (id) REFERENCES vehicle(id)
+);
+
+-- Create table for receptionists
+CREATE TABLE IF NOT EXISTS receptionist (
+    id BIGINT PRIMARY KEY,
+    date_joined BIGINT,
+    active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (id) REFERENCES account(id)
+);
+
+-- Create table for service (parent for Driver)
+CREATE TABLE IF NOT EXISTS service (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    service_id VARCHAR(255),
+    vehicle_reservation_id BIGINT,
+    service_type VARCHAR(50),
+    FOREIGN KEY (vehicle_reservation_id) REFERENCES vehicle_reservation(id)
+);
+
+-- Create table for driver service
+CREATE TABLE IF NOT EXISTS driver (
+    id BIGINT PRIMARY KEY,
+    FOREIGN KEY (id) REFERENCES service(id)
 );
 
 -- Create indexes for better query performance

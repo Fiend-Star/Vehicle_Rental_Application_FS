@@ -1,13 +1,6 @@
 package com.intern.carRental.primary.vehicletypes;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.intern.carRental.primary.abstrct.Vehicle;
 import com.intern.primary.enums.VanType;
@@ -17,14 +10,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//@PrimaryKeyJoinColumn(name="id")  
-@Entity
+@Table("van")
 public class Van extends Vehicle {
 	
-
+	private String type; // Stored as string representation of VanType enum
 	
-	@Enumerated(EnumType.STRING)
-	private VanType type; 
+	// Helper methods to get/set enum type
+	public VanType getVanTypeEnum() {
+		return type != null ? VanType.valueOf(type) : null;
+	}
+	
+	public void setVanTypeEnum(VanType vanType) {
+		this.type = vanType != null ? vanType.toString() : null;
+	}
 
 	@Override
 	public Boolean reserveVehicle() {

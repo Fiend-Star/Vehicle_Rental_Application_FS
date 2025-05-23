@@ -1,11 +1,6 @@
 package com.intern.carRental.primary.vehicletypes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import org.springframework.data.relational.core.mapping.Table;
 
 import com.intern.carRental.primary.abstrct.Vehicle;
 
@@ -14,11 +9,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-//@PrimaryKeyJoinColumn(name="id")  
+@Table("motorcycle")
 public class Motorcycle extends Vehicle {
-	
-
 	
 	private String type;
 	
